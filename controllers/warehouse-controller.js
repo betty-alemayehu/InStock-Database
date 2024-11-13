@@ -26,6 +26,27 @@ const createWarehouse = async (req, res) => {
     contact_email,
   } = req.body;
 
+  // Basic validation checks
+  if (
+    !warehouse_name ||
+    !address ||
+    !city ||
+    !country ||
+    !contact_name ||
+    !contact_position ||
+    !contact_phone ||
+    !contact_email ||
+    !/^\d{10}$/.test(contact_phone.replace(/\D/g, "")) || // Check for 10 digits
+    !contact_email.includes("@") // Check for @ symbol
+  ) {
+    return res
+      .status(400)
+      .json({
+        message:
+          "Invalid or missing data in request body, check for @ in email and only 10 numbers in phone field.",
+      });
+  }
+
   try {
     const [newWarehouse] = await knex("warehouses")
       .insert({
