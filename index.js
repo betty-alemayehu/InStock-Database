@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 
-import warehouseRoutes from "./routes/warehouses-routes.js";
+import warehouseRoutes from "./routes/warehouse-routes.js";
 
 const app = express();
 app.use(cors());

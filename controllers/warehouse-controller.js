@@ -5,7 +5,7 @@ const knex = initKnex(configuration);
 // SLIDE 6: Read (GET) - Fetch All Warehouses from DB
 const index = async (_req, res) => {
   try {
-    // get data from knex db, table user
+    // get data from knex db, table warehouses
     const data = await knex("warehouses");
     res.status(200).json(data);
   } catch (err) {
