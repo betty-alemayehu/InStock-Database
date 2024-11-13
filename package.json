@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "dev2": "node --watch index.js",
+    "dev": "node --watch index.js",
     "migrate": "npx knex migrate:latest",
     "rollback": "npx knex migrate:rollback",
     "drop": "npx knex migrate:down",
@@ -23,8 +22,5 @@
     "express": "^4.21.1",
     "knex": "^3.1.0",
     "mysql2": "^3.11.4"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.7"
   }
 }
