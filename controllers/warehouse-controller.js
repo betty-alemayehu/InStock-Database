@@ -13,4 +13,37 @@ const index = async (_req, res) => {
   }
 };
 
-export { index };
+//POST - Add warehouse
+const createWarehouse = async (req, res) => {
+  const {
+    warehouse_name,
+    address,
+    city,
+    country,
+    contact_name,
+    contact_position,
+    contact_phone,
+    contact_email,
+  } = req.body;
+
+  try {
+    const [newWarehouse] = await knex("warehouses")
+      .insert({
+        warehouse_name,
+        address,
+        city,
+        country,
+        contact_name,
+        contact_position,
+        contact_phone,
+        contact_email,
+      })
+      .returning("*");
+
+    res.status(201).json(newWarehouse);
+  } catch (err) {
+    res.status(400).send(`Error creating warehouse: ${err}`);
+  }
+};
+
+export { index, createWarehouse };

@@ -5,4 +5,7 @@ const router = express.Router();
 
 router.route("/").get(warehouseController.index);
 
+//POST - Add warehouse
+router.route("/add").post(warehouseController.createWarehouse);
+
 export default router;
