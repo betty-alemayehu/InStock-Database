@@ -8,7 +8,14 @@
     "db:migrate": "knex migrate:latest",
     "db:seed": "knex seed:run",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "dev2": "node --watch index.js",
+    "migrate": "npx knex migrate:latest",
+    "rollback": "npx knex migrate:rollback",
+    "migrate:rollback": "knex migrate:rollback",
+    "drop": "npx knex migrate:down",
+    "migrate:down": "knex migrate:down",
+    "seed": "npx knex seed:run"
   },
   "keywords": [],
   "author": "",
