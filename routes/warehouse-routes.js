@@ -6,6 +6,8 @@ const router = express.Router();
 // Hit this route on "warehouses"
 router.route("/").get(warehouseController.index);
 
+//POST - Add warehouse
+router.route("/add").post(warehouseController.createWarehouse);
 // Hit this route on "warehouses/:id"
 router.route("/:id").get(warehouseController.findOne);
 
