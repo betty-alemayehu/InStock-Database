@@ -36,7 +36,7 @@ const createWarehouse = async (req, res) => {
     !contact_position?.trim() ||
     !contact_phone?.trim() ||
     !contact_email?.trim() ||
-    !/^\d{10}$/.test(contact_phone.replace(/\D/g, "")) || // Check for 10 digits
+    !/^\d{11}$/.test(contact_phone.replace(/\D/g, "")) || // Check for 11 digits
     !contact_email.includes("@") // Check for @ symbol
   ) {
     return res.status(400).json({
