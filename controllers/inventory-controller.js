@@ -168,7 +168,7 @@ const editInventoryItem = async (req, res) => {
       .where("id", id)
       .first();
 
-    res.status(200).json({ id: updatedInventoryItem, ...updatedItem });
+    res.status(200).json({ ...updatedInventoryItem });
   } catch (error) {
     res.status(500).send(`Error editing inventory item: ${error}`);
   }
