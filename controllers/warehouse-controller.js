@@ -137,19 +137,71 @@ const deleteWarehouse = async (req, res) => {
 };
 
 const editWarehouse = async (req, res) => {
-	//validation goes here
+	const {
+		warehouse_name,
+		address,
+		city,
+		country,
+		contact_name,
+		contact_position,
+		contact_phone,
+		contact_email,
+	} = req.body;
+
+	// Basic validation checks
+	if (
+		!warehouse_name?.trim() ||
+		!address?.trim() ||
+		!city?.trim() ||
+		!country?.trim() ||
+		!contact_name?.trim() ||
+		!contact_position?.trim() ||
+		!contact_phone?.trim() ||
+		!contact_email?.trim() ||
+		!/^\d{11}$/.test(contact_phone.replace(/\D/g, "")) || // Check for 11 digits
+		!contact_email.includes("@") // Check for @ symbol
+	) {
+		return res.status(400).json({
+			message:
+				"Invalid or missing data in request body, check for @ in email and only 10 numbers in phone field.",
+		});
+	}
 
 	try {
-		const warehouse = await knex("warehouses").where({ id: req.params.id });
+		const warehouseUpdated = await knex("warehouses")
+			.where({ id: req.params.id })
+			.update({
+				warehouse_name: warehouse_name,
+				address: address,
+				city: city,
+				country: country,
+				contact_name: contact_name,
+				contact_position: contact_position,
+				contact_phone: contact_phone,
+				contact_email: contact_email,
+			});
 
-		if (warehouse.length === 0) {
+		if (warehouseUpdated === 0) {
 			res.status(404).json({
 				message: `Unable to find warehouse with id ${req.params.id}`,
 			});
 		}
 
-		const editedWarehouse = warehouse[0];
-		res.json(editedWarehouse);
+		const editedWarehouse = await knex("warehouses")
+			.where({ id: req.params.id })
+			.select(
+				"id",
+				"warehouse_name",
+				"address",
+				"city",
+				"country",
+				"contact_name",
+				"contact_position",
+				"contact_phone",
+				"contact_email"
+			)
+			.first();
+		res.status(201).json(editedWarehouse);
 	} catch (error) {
 		res
 			.status(500)
