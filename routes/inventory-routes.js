@@ -9,9 +9,10 @@ router
   .get(inventoryController.index)
   .post(inventoryController.createInventoryItem);
 // GET - Hit this route on "inventories/:id"
-router.route("/:id").get(inventoryController.findOne);
-
-// PUT - edit inventory item
-router.route("/:id").put(inventoryController.editInventoryItem);
+router
+  .route("/:id")
+  .get(inventoryController.findOne)
+  .put(inventoryController.editInventoryItem)
+  .delete(inventoryController.removeInventoryItem);
 
 export default router;
