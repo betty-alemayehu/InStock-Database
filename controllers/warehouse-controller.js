@@ -10,7 +10,7 @@ const index = async (_req, res) => {
 		const data = await knex("warehouses");
 		res.status(200).json(data);
 	} catch (err) {
-		res.status(400).send(`Error retrieving Warehouses: ${err}`);
+		res.status(500).send(`Error retrieving Warehouses: ${err}`);
 	}
 };
 
@@ -85,7 +85,7 @@ const createWarehouse = async (req, res) => {
 
 		res.status(201).json(newWarehouse);
 	} catch (err) {
-		res.status(400).send(`Error creating warehouse: ${err}`);
+		res.status(500).send(`Error creating warehouse: ${err}`);
 	}
 };
 
@@ -112,4 +112,26 @@ const getInventory = async (req, res) => {
 	}
 };
 
-export { index, findOne, createWarehouse, getInventory };
+const deleteWarehouse = async (req, res) => {
+	try {
+		const warehouseDeleted = await knex("warehouses")
+			.where({ id: req.params.id })
+			.del();
+
+		console.log(warehouseDeleted);
+
+		if (warehouseDeleted === 0) {
+			res
+				.status(404)
+				.json({ message: `Unable to find warehouse with id ${req.params.id}` });
+		}
+
+		res.sendStatus(204);
+	} catch (error) {
+		res.status(500).json({
+			message: `Error deleting warehouse with id ${req.params.id}: ${error}`,
+		});
+	}
+};
+
+export { index, findOne, createWarehouse, getInventory, deleteWarehouse };
