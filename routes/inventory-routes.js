@@ -11,4 +11,7 @@ router.route("/:id").get(inventoryController.findOne);
 //POST - Add inventory
 router.route("/inventory/add").post(inventoryController.createInventoryItem);
 
+// PUT - edit inventory item
+router.route("/inventory/:id/edit").put(inventoryController.editInventoryItem);
+
 export default router;
