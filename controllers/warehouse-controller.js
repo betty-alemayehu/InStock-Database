@@ -70,20 +70,22 @@ const createWarehouse = async (req, res) => {
   }
 
   try {
-    const [newWarehouse] = await knex("warehouses")
-      .insert({
-        warehouse_name,
-        address,
-        city,
-        country,
-        contact_name,
-        contact_position,
-        contact_phone,
-        contact_email,
-      })
+    const newWarehouse = {
+      warehouse_name,
+      address,
+      city,
+      country,
+      contact_name,
+      contact_position,
+      contact_phone,
+      contact_email,
+    };
+
+    const [newWarehouseId] = await knex("warehouses")
+      .insert(newWarehouse)
       .returning("*");
 
-    res.status(201).json(newWarehouse);
+    res.status(201).json({ id: newWarehouseId, ...newWarehouse });
   } catch (err) {
     res.status(400).send(`Error creating warehouse: ${err}`);
   }
