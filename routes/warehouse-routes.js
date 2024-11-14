@@ -6,8 +6,12 @@ const router = express.Router();
 // Hit this route on "warehouses"
 router.route("/").get(warehouseController.index);
 
-//POST - Add warehouse
-router.route("/add").post(warehouseController.createWarehouse);
+//POST @ /add -- create warehouse, create inventory
+router
+  .route("/add")
+  .post(warehouseController.createWarehouse)
+  .post(warehouseController.createInventory);
+  
 // Hit this route on "warehouses/:id"
 router.route("/:id").get(warehouseController.findOne);
 
