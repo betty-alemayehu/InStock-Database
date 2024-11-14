@@ -9,6 +9,7 @@ router.route("/").get(warehouseController.index);
 router
 	.route("/:id")
 	.get(warehouseController.findOne)
+	.delete(warehouseController.deleteWarehouse)
 	.put(warehouseController.editWarehouse);
 //POST - Add warehouse
 router.route("/add").post(warehouseController.createWarehouse);

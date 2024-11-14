@@ -9,6 +9,6 @@ router.route("/").get(inventoryController.index);
 router.route("/:id").get(inventoryController.findOne);
 
 //POST - Add inventory
-router.route("/inventory/add").post(inventoryController.createInventoryItem);
+router.route("/add").post(inventoryController.createInventoryItem);
 
 export default router;
