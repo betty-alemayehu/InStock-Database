@@ -156,9 +156,9 @@ const editInventoryItem = async (req, res) => {
       .insert(updatedItem)
       .returning("*");
 
-    res.status(201).json({ id: newInventoryItemId, ...newItem });
+    res.status(201).json({ id: UpdatedInventoryItemId, ...updatedItem });
   } catch (error) {
-    res.status(500).send(`Error creating inventory item: ${error}`);
+    res.status(500).send(`Error editing inventory item: ${error}`);
   }
 };
 
