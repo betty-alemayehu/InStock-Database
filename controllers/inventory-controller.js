@@ -59,4 +59,54 @@ const findOne = async (req, res) => {
 	}
 };
 
-export { index, findOne };
+const createInventoryItem = async (req, res) => {
+  const { warehouse_id, item_name, description, category, status } = req.body;
+  const quantity = Number(req.body.quantity);
+
+  // Basic validation checks
+  if (
+    !warehouse_id ||
+    !item_name?.trim() ||
+    !description?.trim() ||
+    !category ||
+    !status ||
+    quantity === undefined ||
+    !["In Stock", "Out of Stock"].includes(status) ||
+    isNaN(quantity)
+  ) {
+    return res.status(400).json({
+      message:
+        "Invalid or missing data in request body. Ensure all fields are correctly entered, status is either 'In Stock' or 'Out of Stock', and quantity is a number value.",
+    });
+  }
+
+  try {
+    const warehouseExists = await knex("warehouses")
+      .select("id")
+      .where("id", warehouse_id)
+      .first();
+
+    if (!warehouseExists) {
+      return res.status(400).json({ message: "Invalid warehouse_id" });
+    }
+
+    const newItem = {
+      warehouse_id,
+      item_name,
+      description,
+      category,
+      status,
+      quantity,
+    };
+
+    const [newInventoryItemId] = await knex("inventories")
+      .insert(newItem)
+      .returning("*");
+
+    res.status(201).json({ id: newInventoryItemId, ...newItem });
+  } catch (error) {
+    res.status(400).send(`Error creating inventory item: ${error}`);
+  }
+};
+
+export { index, findOne, createInventoryItem };
