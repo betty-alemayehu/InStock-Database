@@ -6,16 +6,17 @@ const router = express.Router();
 // Hit this route on "warehouses"
 router.route("/").get(warehouseController.index);
 
-//POST @ /add -- create warehouse, create inventory
+//POST - Add warehouse
 router
-  .route("/add")
-  .post(warehouseController.createWarehouse)
-  .post(warehouseController.createInventory);
-  
+.route("/add")
+.post(warehouseController.createWarehouse);
 // Hit this route on "warehouses/:id"
 router.route("/:id").get(warehouseController.findOne);
 
 //To get inventories for a specific warehouse
 router.route("/:id/inventories").get(warehouseController.getInventory);
+
+//POST - Add inventory
+router.route("/inventory/add").post(warehouseController.createInventory);
 
 export default router;
