@@ -132,6 +132,15 @@ const editInventoryItem = async (req, res) => {
   }
 
   try {
+    const warehouseExists = await knex("warehouses")
+      .select("id")
+      .where("id", warehouse_id)
+      .first();
+
+    if (!warehouseExists) {
+      return res.status(400).json({ message: "Invalid warehouse_id" });
+    }
+
     const inventoryItemExists = await knex("inventories")
       .select("id")
       .where("id", id)
@@ -152,11 +161,14 @@ const editInventoryItem = async (req, res) => {
       quantity,
     };
 
-    const [UpdatedInventoryItemId] = await knex("inventories")
-      .update(updatedItem)
-      .returning("*");
+    await knex("inventories").where("id", id).update(updatedItem);
 
-    res.status(200).json({ id: UpdatedInventoryItemId, ...updatedItem });
+    const updatedInventoryItem = await knex("inventories")
+      .select("*")
+      .where("id", id)
+      .first();
+
+    res.status(200).json({ id: updatedInventoryItem, ...updatedItem });
   } catch (error) {
     res.status(500).send(`Error editing inventory item: ${error}`);
   }
