@@ -7,9 +7,11 @@ const router = express.Router();
 router
   .route("/")
   .get(inventoryController.index)
-  .post(inventoryController.createInventoryItem)
-  .put(inventoryController.editInventoryItem);
+  .post(inventoryController.createInventoryItem);
 // GET - Hit this route on "inventories/:id"
 router.route("/:id").get(inventoryController.findOne);
+
+// PUT - edit inventory item
+router.route("/:id").put(inventoryController.editInventoryItem);
 
 export default router;
