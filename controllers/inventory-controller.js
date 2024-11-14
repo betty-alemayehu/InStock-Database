@@ -163,8 +163,18 @@ const editInventoryItem = async (req, res) => {
 
     await knex("inventories").where("id", id).update(updatedItem);
 
+    const selectedInventoryFields = [
+      "id",
+      "warehouse_id",
+      "item_name",
+      "description",
+      "category",
+      "status",
+      "quantity",
+    ];
+
     const updatedInventoryItem = await knex("inventories")
-      .select("*")
+      .select(...selectedInventoryFields)
       .where("id", id)
       .first();
 
