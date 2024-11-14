@@ -139,8 +139,8 @@ const editInventoryItem = async (req, res) => {
 
     if (!inventoryItemExists) {
       return res
-        .status(400)
-        .json({ message: "Inventory item with ID ${id} not found." });
+        .status(404)
+        .json({ message: `Inventory item with ID ${id} not found.` });
     }
 
     const updatedItem = {
@@ -153,10 +153,10 @@ const editInventoryItem = async (req, res) => {
     };
 
     const [UpdatedInventoryItemId] = await knex("inventories")
-      .insert(updatedItem)
+      .update(updatedItem)
       .returning("*");
 
-    res.status(201).json({ id: UpdatedInventoryItemId, ...updatedItem });
+    res.status(200).json({ id: UpdatedInventoryItemId, ...updatedItem });
   } catch (error) {
     res.status(500).send(`Error editing inventory item: ${error}`);
   }
