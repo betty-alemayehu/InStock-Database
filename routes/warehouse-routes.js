@@ -13,7 +13,4 @@ router.route("/add").post(warehouseController.createWarehouse);
 //To get inventories for a specific warehouse
 router.route("/:id/inventories").get(warehouseController.getInventory);
 
-//POST - Add inventory
-router.route("/inventory/add").post(warehouseController.createInventory);
-
 export default router;
