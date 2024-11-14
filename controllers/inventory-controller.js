@@ -61,7 +61,7 @@ const findOne = async (req, res) => {
 
 const createInventoryItem = async (req, res) => {
   const { warehouse_id, item_name, description, category, status } = req.body;
-  const quantity = Number(req.body.quanity);
+  const quantity = Number(req.body.quantity);
 
   // Basic validation checks
   if (
@@ -90,18 +90,20 @@ const createInventoryItem = async (req, res) => {
       return res.status(400).json({ message: "Invalid warehouse_id" });
     }
 
-    const [newInventoryItem] = await knex("inventories")
-      .insert({
-        warehouse_id,
-        item_name,
-        description,
-        category,
-        status,
-        quantity,
-      })
+    const newItem = {
+      warehouse_id,
+      item_name,
+      description,
+      category,
+      status,
+      quantity,
+    };
+
+    const [newInventoryItemId] = await knex("inventories")
+      .insert(newItem)
       .returning("*");
 
-    res.status(201).json(newInventoryItem);
+    res.status(201).json({ id: newInventoryItemId, ...newItem });
   } catch (error) {
     res.status(400).send(`Error creating inventory item: ${error}`);
   }
