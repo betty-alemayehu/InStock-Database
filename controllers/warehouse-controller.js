@@ -122,7 +122,7 @@ const getInventory = async (req, res) => {
     const inventories = await knex("warehouses")
       .join("inventories", "warehouses.id", "inventories.warehouse_id")
       .where({ warehouse_id: req.params.id })
-      .select("warehouses.id", "item_name", "category", "status", "quantity");
+      .select("inventories.id", "item_name", "category", "status", "quantity");
 
     if (inventories.length === 0) {
       res.status(404).json({
