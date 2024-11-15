@@ -2,11 +2,12 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
-const index = async (_req, res) => {
+const index = async (req, res) => {
+  const { s } = req.query;
   try {
     // get data from knex db, table inventories
     // inventories db doesn't have warehouse_name, need to join to access warehouse_name
-    const data = await knex("inventories")
+    const query = knex("inventories")
       .join("warehouses", "inventories.warehouse_id", "warehouses.id")
       .select(
         "inventories.id",
@@ -17,6 +18,18 @@ const index = async (_req, res) => {
         "inventories.status",
         "inventories.quantity"
       );
+
+    //Diving deeper: search functionality
+    if (s) {
+      query.where(function () {
+        this.where("inventories.item_name", "like", `%${s}%`)
+          .orWhere("warehouses.warehouse_name", "like", `%${s}%`)
+          .orWhere("inventories.description", "like", `%${s}%`)
+          .orWhere("inventories.category", "like", `%${s}%`);
+      });
+    }
+
+    const data = await query;
     res.status(200).json(data);
   } catch (err) {
     res.status(500).send(`Error retrieving inventories: ${err}`);
