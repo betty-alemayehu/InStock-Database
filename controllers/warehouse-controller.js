@@ -5,10 +5,10 @@ const knex = initKnex(configuration);
 // SLIDE 6: Read (GET) - Fetch All Warehouses from DB
 // returns all warehouses, building the SQL query SELECT * FROM warehouses
 const index = async (req, res) => {
-  const { s } = req.query; // Retrieve search term from query parameters
+  const { sort_by, order_by = "asc" } = req.query; // Default order_by to 'asc'
 
   try {
-    // Base query to fetch all warehouses
+    // Base query to fetch warehouses
     const query = knex("warehouses").select(
       "id",
       "warehouse_name",
@@ -21,22 +21,17 @@ const index = async (req, res) => {
       "contact_email"
     );
 
-    // If search term exists, filter the query
-    if (s) {
-      query.where(function () {
-        this.where("warehouse_name", "like", `%${s}%`)
-          .orWhere("address", "like", `%${s}%`)
-          .orWhere("city", "like", `%${s}%`)
-          .orWhere("country", "like", `%${s}%`)
-          .orWhere("contact_name", "like", `%${s}%`);
-      });
+    // Apply sorting if sort_by is provided
+    if (sort_by) {
+      query.orderBy(sort_by, order_by);
     }
 
-    // Execute query and send the result
     const data = await query;
     res.status(200).json(data);
-  } catch (err) {
-    res.status(500).send(`Error retrieving warehouses: ${err}`);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: `Error retrieving warehouses: ${error.message}` });
   }
 };
 

@@ -3,10 +3,10 @@ import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
 const index = async (req, res) => {
-  const { s } = req.query;
+  const { sort_by, order_by = "asc" } = req.query; // Default order_by to 'asc'
+
   try {
-    // get data from knex db, table inventories
-    // inventories db doesn't have warehouse_name, need to join to access warehouse_name
+    // Base query to fetch inventories
     const query = knex("inventories")
       .join("warehouses", "inventories.warehouse_id", "warehouses.id")
       .select(
@@ -19,20 +19,17 @@ const index = async (req, res) => {
         "inventories.quantity"
       );
 
-    //Diving deeper: search functionality
-    if (s) {
-      query.where(function () {
-        this.where("inventories.item_name", "like", `%${s}%`)
-          .orWhere("warehouses.warehouse_name", "like", `%${s}%`)
-          .orWhere("inventories.description", "like", `%${s}%`)
-          .orWhere("inventories.category", "like", `%${s}%`);
-      });
+    // Apply sorting if sort_by is provided
+    if (sort_by) {
+      query.orderBy(sort_by, order_by);
     }
 
     const data = await query;
     res.status(200).json(data);
-  } catch (err) {
-    res.status(500).send(`Error retrieving inventories: ${err}`);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: `Error retrieving inventories: ${error.message}` });
   }
 };
 
