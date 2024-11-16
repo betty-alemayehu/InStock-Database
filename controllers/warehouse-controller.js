@@ -2,13 +2,10 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
-// SLIDE 6: Read (GET) - Fetch All Warehouses from DB
-// returns all warehouses, building the SQL query SELECT * FROM warehouses
 const index = async (req, res) => {
-	const { s } = req.query; // Retrieve search term from query parameters
+	const { s } = req.query;
 
 	try {
-		// Base query to fetch all warehouses
 		const query = knex("warehouses").select(
 			"id",
 			"warehouse_name",
@@ -40,7 +37,6 @@ const index = async (req, res) => {
 	}
 };
 
-// returns a single warehouse, building the SQL query SELECT * FROM warehouses WHERE id=#, where # is our parameter at req.params.id.
 const findOne = async (req, res) => {
 	try {
 		const warehouseFound = await knex("warehouses").where({
@@ -52,8 +48,7 @@ const findOne = async (req, res) => {
 				message: `Warehouse with ID ${req.params.id} not found`,
 			});
 		}
-		// Check warehouse
-		console.log(warehouseFound);
+
 		const warehouseData = warehouseFound[0];
 		res.json(warehouseData);
 	} catch (error) {
@@ -63,7 +58,6 @@ const findOne = async (req, res) => {
 	}
 };
 
-//POST - Add warehouse
 const createWarehouse = async (req, res) => {
 	const {
 		warehouse_name,
@@ -124,23 +118,17 @@ const getInventory = async (req, res) => {
 		});
 
 		if (warehouseFound.length === 0) {
-			res.status(404).json({
+			return res.status(404).json({
 				message: `Warehouse with ID ${req.params.id} not found`,
 			});
-		} else {
-			const inventories = await knex("warehouses")
-				.join("inventories", "warehouses.id", "inventories.warehouse_id")
-				.where({ warehouse_id: req.params.id })
-				.select(
-					"inventories.id",
-					"item_name",
-					"category",
-					"status",
-					"quantity"
-				);
-
-			res.json(inventories);
 		}
+
+		const inventories = await knex("warehouses")
+			.join("inventories", "warehouses.id", "inventories.warehouse_id")
+			.where({ warehouse_id: req.params.id })
+			.select("inventories.id", "item_name", "category", "status", "quantity");
+
+		res.json(inventories);
 	} catch (error) {
 		res
 			.status(500)
@@ -155,8 +143,6 @@ const deleteWarehouse = async (req, res) => {
 		const warehouseDeleted = await knex("warehouses")
 			.where({ id: req.params.id })
 			.del();
-
-		console.log(warehouseDeleted);
 
 		if (warehouseDeleted === 0) {
 			res
