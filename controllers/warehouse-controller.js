@@ -2,6 +2,37 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
+// Basic validation checks
+function isValid(obj) {
+	const {
+		warehouse_name,
+		address,
+		city,
+		country,
+		contact_name,
+		contact_position,
+		contact_phone,
+		contact_email,
+	} = obj;
+
+	if (
+		!warehouse_name?.trim() ||
+		!address?.trim() ||
+		!city?.trim() ||
+		!country?.trim() ||
+		!contact_name?.trim() ||
+		!contact_position?.trim() ||
+		!contact_phone?.trim() ||
+		!contact_email?.trim() ||
+		!/^\d{11}$/.test(contact_phone.replace(/\D/g, "")) || // Check for 11 digits
+		!contact_email.includes("@") // Check for @ symbol
+	) {
+		return false;
+	}
+
+	return true;
+}
+
 const index = async (req, res) => {
 	const { s } = req.query;
 
@@ -59,30 +90,7 @@ const findOne = async (req, res) => {
 };
 
 const createWarehouse = async (req, res) => {
-	const {
-		warehouse_name,
-		address,
-		city,
-		country,
-		contact_name,
-		contact_position,
-		contact_phone,
-		contact_email,
-	} = req.body;
-
-	// Basic validation checks
-	if (
-		!warehouse_name?.trim() ||
-		!address?.trim() ||
-		!city?.trim() ||
-		!country?.trim() ||
-		!contact_name?.trim() ||
-		!contact_position?.trim() ||
-		!contact_phone?.trim() ||
-		!contact_email?.trim() ||
-		!/^\d{11}$/.test(contact_phone.replace(/\D/g, "")) || // Check for 11 digits
-		!contact_email.includes("@") // Check for @ symbol
-	) {
+	if (!isValid(req.body)) {
 		return res.status(400).json({
 			message:
 				"Invalid or missing data in request body, check for @ in email and only 10 numbers in phone field.",
@@ -159,30 +167,7 @@ const deleteWarehouse = async (req, res) => {
 };
 
 const editWarehouse = async (req, res) => {
-	const {
-		warehouse_name,
-		address,
-		city,
-		country,
-		contact_name,
-		contact_position,
-		contact_phone,
-		contact_email,
-	} = req.body;
-
-	// Basic validation checks
-	if (
-		!warehouse_name?.trim() ||
-		!address?.trim() ||
-		!city?.trim() ||
-		!country?.trim() ||
-		!contact_name?.trim() ||
-		!contact_position?.trim() ||
-		!contact_phone?.trim() ||
-		!contact_email?.trim() ||
-		!/^\d{11}$/.test(contact_phone.replace(/\D/g, "")) || // Check for 11 digits
-		!contact_email.includes("@") // Check for @ symbol
-	) {
+	if (!isValid(req.body)) {
 		return res.status(400).json({
 			message:
 				"Invalid or missing data in request body, check for @ in email and only 10 numbers in phone field.",
