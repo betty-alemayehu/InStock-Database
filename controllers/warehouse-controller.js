@@ -125,11 +125,25 @@ const getInventory = async (req, res) => {
       .select("inventories.id", "item_name", "category", "status", "quantity");
 
     if (inventories.length === 0) {
-      res.status(404).json({
-        message: `Unable to find inventories for warehouse with id ${req.params.id}`,
-      });
-    }
+      console.log("inventory list empty HIT");
+      // Maybe just send a response to server?
 
+      // Create 1 inventory item with NaN?
+      inventories = [
+        {
+          id: NaN,
+          warehouse_name: "NaN",
+          item_name: "NaN",
+          description: "NaN",
+          category: "NaN",
+          status: "NaN",
+          quantity: NaN,
+        },
+      ];
+      // res.status(404).json({
+      //   message: `Unable to find inventories for warehouse with id ${req.params.id}`,
+      // });
+    }
     res.json(inventories);
   } catch (error) {
     res
