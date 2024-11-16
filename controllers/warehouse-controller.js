@@ -49,7 +49,7 @@ const findOne = async (req, res) => {
 
 		if (warehouseFound.length === 0) {
 			return res.status(404).json({
-				message: `Warehouses with ID ${req.params.id} not found`,
+				message: `Warehouse with ID ${req.params.id} not found`,
 			});
 		}
 		// Check warehouse
@@ -119,32 +119,28 @@ const createWarehouse = async (req, res) => {
 
 const getInventory = async (req, res) => {
 	try {
-		const inventories = await knex("warehouses")
-			.join("inventories", "warehouses.id", "inventories.warehouse_id")
-			.where({ warehouse_id: req.params.id })
-			.select("inventories.id", "item_name", "category", "status", "quantity");
+		const warehouseFound = await knex("warehouses").where({
+			id: req.params.id,
+		});
 
-		if (inventories.length === 0) {
-			console.log("inventory list empty HIT");
-			// Maybe just send a response to server?
+		if (warehouseFound.length === 0) {
+			res.status(404).json({
+				message: `Warehouse with ID ${req.params.id} not found`,
+			});
+		} else {
+			const inventories = await knex("warehouses")
+				.join("inventories", "warehouses.id", "inventories.warehouse_id")
+				.where({ warehouse_id: req.params.id })
+				.select(
+					"inventories.id",
+					"item_name",
+					"category",
+					"status",
+					"quantity"
+				);
 
-			// Create 1 inventory item with NaN?
-			inventories = [
-				{
-					id: NaN,
-					warehouse_name: "NaN",
-					item_name: "NaN",
-					description: "NaN",
-					category: "NaN",
-					status: "NaN",
-					quantity: NaN,
-				},
-			];
-			// res.status(404).json({
-			//   message: `Unable to find inventories for warehouse with id ${req.params.id}`,
-			// });
+			res.json(inventories);
 		}
-		res.json(inventories);
 	} catch (error) {
 		res
 			.status(500)
