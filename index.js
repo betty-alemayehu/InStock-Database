@@ -9,10 +9,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// all warehouses routes
 app.use("/warehouses", warehouseRoutes);
 
-// all inventories routes
 app.use("/inventories", inventoryRoutes);
 
 const PORT = process.env.PORT || 8080;
