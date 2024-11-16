@@ -2,27 +2,6 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
-// Basic validation checks
-function isValid(obj) {
-	const { warehouse_id, item_name, description, category, status } = obj;
-	const quantity = Number(obj.quantity);
-
-	if (
-		!warehouse_id ||
-		!item_name?.trim() ||
-		!description?.trim() ||
-		!category ||
-		!status ||
-		quantity === undefined ||
-		!["In Stock", "Out of Stock"].includes(status) ||
-		isNaN(quantity)
-	) {
-		return false;
-	}
-
-	return true;
-}
-
 const index = async (req, res) => {
 	const { s } = req.query;
 	try {
@@ -87,7 +66,19 @@ const findOne = async (req, res) => {
 };
 
 const createInventoryItem = async (req, res) => {
-	if (!isValid(req.body)) {
+	const { warehouse_id, item_name, description, category, status } = req.body;
+	const quantity = Number(req.body.quantity);
+
+	if (
+		!warehouse_id ||
+		!item_name?.trim() ||
+		!description?.trim() ||
+		!category ||
+		!status ||
+		quantity === undefined ||
+		!["In Stock", "Out of Stock"].includes(status) ||
+		isNaN(quantity)
+	) {
 		return res.status(400).json({
 			message:
 				"Invalid or missing data in request body. Ensure all fields are correctly entered, status is either 'In Stock' or 'Out of Stock', and quantity is a number value.",
@@ -124,8 +115,20 @@ const createInventoryItem = async (req, res) => {
 };
 
 const editInventoryItem = async (req, res) => {
+	const { warehouse_id, item_name, description, category, status } = req.body;
+	const quantity = Number(req.body.quantity);
 	const { id } = req.params;
-	if (!isValid(req.body)) {
+
+	if (
+		!warehouse_id ||
+		!item_name?.trim() ||
+		!description?.trim() ||
+		!category ||
+		!status ||
+		quantity === undefined ||
+		!["In Stock", "Out of Stock"].includes(status) ||
+		isNaN(quantity)
+	) {
 		return res.status(400).json({
 			message:
 				"Invalid or missing data in request body. Ensure all fields are correctly entered, status is either 'In Stock' or 'Out of Stock', and quantity is a number value.",
